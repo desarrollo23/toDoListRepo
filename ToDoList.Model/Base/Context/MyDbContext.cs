@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using ToDoList.Model.MyModels;
 
 namespace ToDoList.Model.Base.Context
 {
@@ -10,6 +11,6 @@ namespace ToDoList.Model.Base.Context
 
         }
 
-        public DbSet<User.User> User { get; set; }
+        public DbSet<User> User { get; set; }
     }
 }

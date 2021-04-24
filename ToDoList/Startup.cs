@@ -1,3 +1,4 @@
+using AutoMapper;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -12,7 +13,14 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using ToDoList.Infraestructure.Mappers.UserMapper;
+using ToDoList.Infraestructure.Repos;
+using ToDoList.Infraestructure.Repository;
+using ToDoList.Infraestructure.Services;
 using ToDoList.Model.Base.Context;
+using ToDoList.Model.Base.Interfaces.Repository;
+using ToDoList.Model.Repos;
+using ToDoList.Model.Services;
 
 namespace ToDoList
 {
@@ -31,9 +39,26 @@ namespace ToDoList
             services.AddControllers();
             services.AddHealthChecks();
 
+            var mapperConfig = new MapperConfiguration(m =>
+            {
+                m.AddProfile(new UserProfile());
+            });
+
+            IMapper mapper = mapperConfig.CreateMapper();
+
+            services.AddSingleton(mapper);
+
+            // services.AddAutoMapper(typeof(Startup));
+
+            services.AddScoped<IUserService, UserService>();
+            services.AddScoped<IUserRepository, UserRepository>();
+            services.AddScoped<IUnitOfWork, UnitOfWork>();
+
+            services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
+
             services.AddDbContext<MyDbContext>(options =>
             {
-                options.UseSqlServer(Configuration["DefaultConnection"]);
+                options.UseSqlServer(Configuration["ConnectionStrings:DefaultConnection"]);
             });
 
             services.AddSwaggerGen(c =>
