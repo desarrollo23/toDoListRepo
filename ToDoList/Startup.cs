@@ -1,4 +1,5 @@
 using AutoMapper;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -8,24 +9,29 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
 using ToDoList.Infraestructure.Mappers.UserMapper;
 using ToDoList.Infraestructure.Repos;
 using ToDoList.Infraestructure.Repository;
 using ToDoList.Infraestructure.Services;
+using ToDoList.Infraestructure.Utils.Security;
 using ToDoList.Model.Base.Context;
 using ToDoList.Model.Base.Interfaces.Repository;
 using ToDoList.Model.Repos;
+using ToDoList.Model.Security;
 using ToDoList.Model.Services;
 
 namespace ToDoList
 {
     public class Startup
     {
+        readonly string MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
@@ -36,6 +42,16 @@ namespace ToDoList
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddCors(options =>
+            {
+                options.AddPolicy(name: MyAllowSpecificOrigins,
+                                  builder =>
+                                  {
+                                      builder.WithOrigins("http://example.com",
+                                                          "http://www.contoso.com");
+                                  });
+            });
+
             services.AddControllers();
             services.AddHealthChecks();
 
@@ -48,18 +64,27 @@ namespace ToDoList
 
             services.AddSingleton(mapper);
 
-            // services.AddAutoMapper(typeof(Startup));
 
+            #region Mis interfaces
             services.AddScoped<IUserService, UserService>();
             services.AddScoped<IUserRepository, UserRepository>();
             services.AddScoped<IUnitOfWork, UnitOfWork>();
 
+            services.AddScoped<ISecurityRepository, SecurityRepository>();
+            services.AddScoped<ISecurityService, SecurityService>();
             services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
 
+            services.AddSingleton<IJwtAuthentication, JwtAuthentication>();
+            #endregion
+
+            #region DbContext
             services.AddDbContext<MyDbContext>(options =>
             {
                 options.UseSqlServer(Configuration["ConnectionStrings:DefaultConnection"]);
             });
+            #endregion
+
+            SetJwtAuthentication(services);
 
             services.AddSwaggerGen(c =>
             {
@@ -102,8 +127,9 @@ namespace ToDoList
             app.UseHttpsRedirection();
 
             app.UseRouting();
-
+            app.UseCors(MyAllowSpecificOrigins);
             app.UseAuthorization();
+            app.UseAuthentication();
 
             app.UseEndpoints(endpoints =>
             {
@@ -111,6 +137,29 @@ namespace ToDoList
 
                 endpoints.MapHealthChecks("/health");
             });
+        }
+
+        private void SetJwtAuthentication(IServiceCollection services)
+        {
+            var key = Encoding.ASCII.GetBytes(Configuration.GetValue<string>("Jwt:Key"));
+
+            services.AddAuthentication(x =>
+            {
+                x.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                x.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+            })
+               .AddJwtBearer(options =>
+               {
+                   options.RequireHttpsMetadata = false;
+                   options.SaveToken = true;
+                   options.TokenValidationParameters = new TokenValidationParameters
+                   {
+                       ValidateIssuer = false,
+                       ValidateAudience = false,
+                       ValidateIssuerSigningKey = true,
+                       IssuerSigningKey = new SymmetricSecurityKey(key)
+                   };
+               });
         }
     }
 }

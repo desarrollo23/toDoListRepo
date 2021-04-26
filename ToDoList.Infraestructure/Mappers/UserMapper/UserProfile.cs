@@ -14,6 +14,7 @@ namespace ToDoList.Infraestructure.Mappers.UserMapper
         {
             CreateMap<CreateUserDTO, User>().ReverseMap();
             CreateMap<User, UserDTO>().ReverseMap();
+            CreateMap<ValidateUserDTO, User>().ReverseMap();
         }
     }
 }
