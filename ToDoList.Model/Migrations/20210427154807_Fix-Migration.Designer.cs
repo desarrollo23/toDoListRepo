@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using ToDoList.Model.Base.Context;
 
 namespace ToDoList.Model.Migrations
 {
     [DbContext(typeof(MyDbContext))]
-    partial class MyDbContextModelSnapshot : ModelSnapshot
+    [Migration("20210427154807_Fix-Migration")]
+    partial class FixMigration
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -131,7 +133,7 @@ namespace ToDoList.Model.Migrations
             modelBuilder.Entity("ToDoList.Model.MyModels.ShoppingCar", b =>
                 {
                     b.HasOne("ToDoList.Model.MyModels.User", "User")
-                        .WithMany("ShoppingCars")
+                        .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -142,11 +144,6 @@ namespace ToDoList.Model.Migrations
             modelBuilder.Entity("ToDoList.Model.MyModels.ShoppingCar", b =>
                 {
                     b.Navigation("Items");
-                });
-
-            modelBuilder.Entity("ToDoList.Model.MyModels.User", b =>
-                {
-                    b.Navigation("ShoppingCars");
                 });
 #pragma warning restore 612, 618
         }

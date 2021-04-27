@@ -28,23 +28,23 @@ namespace ToDoList.Service.Controllers
             _mapper = mapper;
         }
 
-        [HttpGet("getAllUsers")]
-        public IActionResult GetAllUsers()
-        {
-            var users = _userService.GetAllUsers();
+        //[HttpGet("getAllUsers")]
+        //public IActionResult GetAllUsers()
+        //{
+        //    var users = _userService.GetAllUsers();
 
-            var usersDTO = _mapper.Map<List<UserDTO>>(users);
+        //    var usersDTO = _mapper.Map<List<UserDTO>>(users);
 
-            return Ok(usersDTO);
-        }
+        //    return Ok(usersDTO);
+        //}
 
-        [HttpPost("create")]
-        public IActionResult CreateUser(CreateUserDTO userDTO)
-        {
-            var user = _mapper.Map<User>(userDTO);
-            _userService.CreateUser(user);
+        //[HttpPost("create")]
+        //public IActionResult CreateUser(CreateUserDTO userDTO)
+        //{
+        //    var user = _mapper.Map<User>(userDTO);
+        //    _userService.CreateUser(user);
 
-            return Ok();
-        }
+        //    return Ok();
+        //}
     }
 }

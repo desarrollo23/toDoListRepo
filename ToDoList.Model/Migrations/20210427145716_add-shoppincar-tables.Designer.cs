@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using ToDoList.Model.Base.Context;
 
 namespace ToDoList.Model.Migrations
 {
     [DbContext(typeof(MyDbContext))]
-    partial class MyDbContextModelSnapshot : ModelSnapshot
+    [Migration("20210427145716_add-shoppincar-tables")]
+    partial class addshoppincartables
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -32,6 +34,9 @@ namespace ToDoList.Model.Migrations
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
 
+                    b.Property<int>("IdShoppingCar")
+                        .HasColumnType("int");
+
                     b.Property<bool>("IsCompleted")
                         .HasColumnType("bit");
 
@@ -41,7 +46,7 @@ namespace ToDoList.Model.Migrations
                     b.Property<string>("Name")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("ShoppingCarId")
+                    b.Property<int?>("ShoppingCarId")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
@@ -64,13 +69,16 @@ namespace ToDoList.Model.Migrations
                     b.Property<string>("Description")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<int>("IdUser")
+                        .HasColumnType("int");
+
                     b.Property<DateTime?>("ModifiedAt")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("Name")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("UserId")
+                    b.Property<int?>("UserId")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
@@ -121,9 +129,7 @@ namespace ToDoList.Model.Migrations
                 {
                     b.HasOne("ToDoList.Model.MyModels.ShoppingCar", "ShoppingCar")
                         .WithMany("Items")
-                        .HasForeignKey("ShoppingCarId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("ShoppingCarId");
 
                     b.Navigation("ShoppingCar");
                 });
@@ -131,10 +137,8 @@ namespace ToDoList.Model.Migrations
             modelBuilder.Entity("ToDoList.Model.MyModels.ShoppingCar", b =>
                 {
                     b.HasOne("ToDoList.Model.MyModels.User", "User")
-                        .WithMany("ShoppingCars")
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .WithMany()
+                        .HasForeignKey("UserId");
 
                     b.Navigation("User");
                 });
@@ -142,11 +146,6 @@ namespace ToDoList.Model.Migrations
             modelBuilder.Entity("ToDoList.Model.MyModels.ShoppingCar", b =>
                 {
                     b.Navigation("Items");
-                });
-
-            modelBuilder.Entity("ToDoList.Model.MyModels.User", b =>
-                {
-                    b.Navigation("ShoppingCars");
                 });
 #pragma warning restore 612, 618
         }

@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using ToDoList.Model.Base.Entity;
 
 namespace ToDoList.Model.MyModels
@@ -17,6 +18,8 @@ namespace ToDoList.Model.MyModels
 
         [Required]
         public string Password { get; set; }
+
+        public List<ShoppingCar> ShoppingCars { get; set; }
 
     }
 }

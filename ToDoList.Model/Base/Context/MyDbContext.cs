@@ -12,5 +12,8 @@ namespace ToDoList.Model.Base.Context
         }
 
         public DbSet<User> User { get; set; }
+        public DbSet<ShoppingCar> ShoppingCar { get; set; }
+
+        public DbSet<ItemCar> ItemCar { get; set; }
     }
 }

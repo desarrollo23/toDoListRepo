@@ -16,6 +16,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using ToDoList.Infraestructure.Mappers;
 using ToDoList.Infraestructure.Mappers.UserMapper;
 using ToDoList.Infraestructure.Repos;
 using ToDoList.Infraestructure.Repository;
@@ -42,40 +43,27 @@ namespace ToDoList
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddCors(options =>
-            {
-                options.AddPolicy(name: MyAllowSpecificOrigins,
-                                  builder =>
-                                  {
-                                      builder.WithOrigins("http://example.com",
-                                                          "http://www.contoso.com");
-                                  });
-            });
+            //services.AddCors(options =>
+            //{
+            //    options.AddPolicy(name: MyAllowSpecificOrigins,
+            //                      builder =>
+            //                      {
+            //                          builder.WithOrigins("http://example.com",
+            //                                              "http://www.contoso.com");
+            //                      });
+            //});
 
-            services.AddControllers();
+            services.AddControllers()
+                .AddNewtonsoftJson(options =>
+                    options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore
+                );
+
             services.AddHealthChecks();
 
-            var mapperConfig = new MapperConfiguration(m =>
-            {
-                m.AddProfile(new UserProfile());
-            });
+            AddServices(services);
+            AddRepositories(services);
+            ConfigureMappers(services);
 
-            IMapper mapper = mapperConfig.CreateMapper();
-
-            services.AddSingleton(mapper);
-
-
-            #region Mis interfaces
-            services.AddScoped<IUserService, UserService>();
-            services.AddScoped<IUserRepository, UserRepository>();
-            services.AddScoped<IUnitOfWork, UnitOfWork>();
-
-            services.AddScoped<ISecurityRepository, SecurityRepository>();
-            services.AddScoped<ISecurityService, SecurityService>();
-            services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
-
-            services.AddSingleton<IJwtAuthentication, JwtAuthentication>();
-            #endregion
 
             #region DbContext
             services.AddDbContext<MyDbContext>(options =>
@@ -86,27 +74,9 @@ namespace ToDoList
 
             SetJwtAuthentication(services);
 
-            services.AddSwaggerGen(c =>
-            {
-                c.SwaggerDoc("v1", new OpenApiInfo
-                {
-                    Version = "v1",
-                    Title = "ToDo API",
-                    Description = "A simple example ASP.NET Core Web API",
-                    TermsOfService = new Uri("https://example.com/terms"),
-                    Contact = new OpenApiContact
-                    {
-                        Name = "Andres Duarte",
-                        Email = "andresduarte152@gmail.com",
-                        Url = new Uri("https://github.com/desarrollo23"),
-                    },
-                    License = new OpenApiLicense
-                    {
-                        Name = "Use under LICX",
-                        Url = new Uri("https://example.com/license"),
-                    }
-                });
-            });
+            ConfigureSwagger(services);
+
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -160,6 +130,63 @@ namespace ToDoList
                        IssuerSigningKey = new SymmetricSecurityKey(key)
                    };
                });
+
+            services.AddSingleton<IJwtAuthentication, JwtAuthentication>();
+        }
+
+        private void AddServices(IServiceCollection services)
+        {
+            services.AddScoped<IUserService, UserService>();
+            services.AddScoped<ISecurityService, SecurityService>();
+            services.AddScoped<IShoppingCarService, ShoppingCarService>();
+        }
+
+        private void AddRepositories(IServiceCollection services)
+        {
+            services.AddScoped<IUserRepository, UserRepository>();
+            services.AddScoped<IUnitOfWork, UnitOfWork>();
+            services.AddScoped<ISecurityRepository, SecurityRepository>();
+            services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
+            services.AddScoped<IShoppingCarRepository, ShoppingCarRepository>();
+        }
+
+        private void ConfigureMappers(IServiceCollection services)
+        {
+            var mapperConfig = new MapperConfiguration(m =>
+            {
+                m.AddProfile(new UserProfile());
+                m.AddProfile(new ShoppingCarProfile());
+
+            });
+
+            IMapper mapper = mapperConfig.CreateMapper();
+
+            services.AddSingleton(mapper);
+        }
+
+        private void ConfigureSwagger(IServiceCollection services)
+        {
+            services.AddSwaggerGen(c =>
+            {
+                c.SwaggerDoc("v1", new OpenApiInfo
+                {
+                    Version = "v1",
+                    Title = "ToDo API",
+                    Description = "A simple example ASP.NET Core Web API",
+                    TermsOfService = new Uri("https://example.com/terms"),
+                    Contact = new OpenApiContact
+                    {
+                        Name = "Andres Duarte",
+                        Email = "andresduarte152@gmail.com",
+                        Url = new Uri("https://github.com/desarrollo23"),
+                    },
+                    License = new OpenApiLicense
+                    {
+                        Name = "Use under LICX",
+                        Url = new Uri("https://example.com/license"),
+                    }
+                });
+            });
         }
     }
 }

@@ -46,11 +46,5 @@ namespace ToDoList.Service.Controllers
             return Unauthorized();
 
         }
-
-        [HttpGet("test")]
-        public IActionResult Test()
-        {
-            return Ok("Todo bien");
-        }
     }
 }
