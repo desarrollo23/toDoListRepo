@@ -27,5 +27,13 @@ namespace ToDoList.Infraestructure.Repos
                 .Include(x => x.Items)
                 .ToList();
         }
+
+        public override ShoppingCar FindById(int id)
+        {
+            return _unitOfWork.Context.ShoppingCar
+                .Include(x => x.Items)
+                .FirstOrDefault(x => x.Id == id);
+                
+        }
     }
 }

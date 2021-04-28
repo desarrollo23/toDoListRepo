@@ -139,6 +139,7 @@ namespace ToDoList
             services.AddScoped<IUserService, UserService>();
             services.AddScoped<ISecurityService, SecurityService>();
             services.AddScoped<IShoppingCarService, ShoppingCarService>();
+            services.AddScoped<IItemCarService, ItemCarService>();
         }
 
         private void AddRepositories(IServiceCollection services)
@@ -146,8 +147,9 @@ namespace ToDoList
             services.AddScoped<IUserRepository, UserRepository>();
             services.AddScoped<IUnitOfWork, UnitOfWork>();
             services.AddScoped<ISecurityRepository, SecurityRepository>();
-            services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
+            //services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
             services.AddScoped<IShoppingCarRepository, ShoppingCarRepository>();
+            services.AddScoped<IItemCarRepository, ItemCarRepository>();
         }
 
         private void ConfigureMappers(IServiceCollection services)
@@ -156,6 +158,7 @@ namespace ToDoList
             {
                 m.AddProfile(new UserProfile());
                 m.AddProfile(new ShoppingCarProfile());
+                m.AddProfile(new ItemCarProfile());
 
             });
 

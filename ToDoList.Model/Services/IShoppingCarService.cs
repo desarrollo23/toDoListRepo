@@ -15,6 +15,10 @@ namespace ToDoList.Model.Services
         CreateEntityResponse CreateShoppingCar(ShoppingCarDTO shoppingCarDTO);
 
         EntityResponse GetShoppingCarsByIdUser(int idUser);
+
+        EntityResponse UpdateShoppingCar(ShoppingCarDTO shoppingCarDTO, int id);
+
+        EntityResponse DeleteShoppingCar(int id);
         
     }
 }

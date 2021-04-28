@@ -10,8 +10,12 @@ namespace ToDoList.Model.DTOS.Response.Base
 {
     public class EntityResponse
     {
-        public object Entity { get; set; }
-        public HttpStatusCode StatusCode { get; set; }
-        public List<Error> Errors { get; set; }
+        public EntityResponse()
+        {
+            Errors = new List<Error>();
+        }
+        public object? Entity { get; set; }
+        public HttpStatusCode? StatusCode { get; set; }
+        public List<Error> ? Errors { get; set; }
     }
 }
