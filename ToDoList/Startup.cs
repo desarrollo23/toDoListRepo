@@ -43,15 +43,16 @@ namespace ToDoList
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            //services.AddCors(options =>
-            //{
-            //    options.AddPolicy(name: MyAllowSpecificOrigins,
-            //                      builder =>
-            //                      {
-            //                          builder.WithOrigins("http://example.com",
-            //                                              "http://www.contoso.com");
-            //                      });
-            //});
+            services.AddCors(options =>
+            {
+                options.AddPolicy(name: MyAllowSpecificOrigins,
+                                  builder =>
+                                  {
+                                      builder.WithOrigins("http://localhost:3000")
+                                      .AllowAnyHeader()
+                                      .AllowAnyMethod(); ;
+                                  });
+            });
 
             services.AddControllers()
                 .AddNewtonsoftJson(options =>
@@ -139,6 +140,7 @@ namespace ToDoList
             services.AddScoped<IUserService, UserService>();
             services.AddScoped<ISecurityService, SecurityService>();
             services.AddScoped<IShoppingCarService, ShoppingCarService>();
+            services.AddScoped<IItemCarService, ItemCarService>();
         }
 
         private void AddRepositories(IServiceCollection services)
@@ -146,8 +148,9 @@ namespace ToDoList
             services.AddScoped<IUserRepository, UserRepository>();
             services.AddScoped<IUnitOfWork, UnitOfWork>();
             services.AddScoped<ISecurityRepository, SecurityRepository>();
-            services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
+            //services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
             services.AddScoped<IShoppingCarRepository, ShoppingCarRepository>();
+            services.AddScoped<IItemCarRepository, ItemCarRepository>();
         }
 
         private void ConfigureMappers(IServiceCollection services)
@@ -156,6 +159,7 @@ namespace ToDoList
             {
                 m.AddProfile(new UserProfile());
                 m.AddProfile(new ShoppingCarProfile());
+                m.AddProfile(new ItemCarProfile());
 
             });
 

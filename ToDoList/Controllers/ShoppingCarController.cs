@@ -41,9 +41,23 @@ namespace ToDoList.Service.Controllers
         {
             var response = _shoppingCarService.GetShoppingCarsByIdUser(userId);
 
-            if (response.Errors != null)
-                return NotFound();
+            if (response.Errors.Any())
+                return NoContent();
 
+            return Ok(response);
+        }
+
+        [HttpPut("updateShoppingCar/{id}")]
+        public IActionResult UpdateShoppingCar(ShoppingCarDTO shoppingCarDTO, int id)
+        {
+            var response = _shoppingCarService.UpdateShoppingCar(shoppingCarDTO, id);
+            return Ok(response);
+        }
+
+        [HttpDelete("deleteShoppingCar/{id}")]
+        public IActionResult DeleteShoppingCar(int id)
+        {
+            var response = _shoppingCarService.DeleteShoppingCar(id);
             return Ok(response);
         }
     }

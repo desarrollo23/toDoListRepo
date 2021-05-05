@@ -7,7 +7,7 @@ using ToDoList.Model.Base.Interfaces.Repository;
 
 namespace ToDoList.Infraestructure.Repository
 {
-    public class Repository<T> : IRepository<T> where T : Entity
+    public abstract class Repository<T> : IRepository<T> where T : Entity
     {
         private readonly IUnitOfWork _unitOfWork;
 
@@ -20,7 +20,7 @@ namespace ToDoList.Infraestructure.Repository
             _unitOfWork.Context.Add(entity);
         }
 
-        public void Delete(int id)
+        public virtual void Delete(int id)
         {
             var entity = _unitOfWork.Context.Set<T>().FirstOrDefault(x => x.Id == id);
 
@@ -30,14 +30,24 @@ namespace ToDoList.Infraestructure.Repository
             }
         }
 
-        public IList<T> FindAll()
+        public virtual IList<T> FindAll()
         {
             return _unitOfWork.Context.Set<T>().ToList();
         }
 
-        public T FindById(int id)
+        public virtual T FindById(int id)
         {
             return _unitOfWork.Context.Set<T>().FirstOrDefault(x => x.Id == id);
+        }
+
+        public virtual void Update(T entity)
+        {
+            _unitOfWork.Context.Entry(entity).State = Microsoft.EntityFrameworkCore.EntityState.Modified;
+        }
+
+        public virtual T FindBy(Func<T, bool> predicate)
+        {
+            return _unitOfWork.Context.Set<T>().FirstOrDefault(predicate);
         }
     }
 }
