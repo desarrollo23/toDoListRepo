@@ -20,7 +20,6 @@ namespace ToDoList.Service.Controllers
 
 
         [AllowAnonymous]
-        //[JwtAuthentication]
         [HttpPost("authenticate")]
         public IActionResult Authentication([FromBody] ValidateUserDTO validateUserDTO)
         {
@@ -32,6 +31,7 @@ namespace ToDoList.Service.Controllers
 
                 var responseAuthenticateDTO = new ResponseAuthenticateDTO
                 {
+                    Id = user.Id,
                     Identification = validateUserDTO.Identification,
                     Message = "Authentication successful",
                     StatusCode = System.Net.HttpStatusCode.OK,

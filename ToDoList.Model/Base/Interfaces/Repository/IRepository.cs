@@ -13,5 +13,7 @@ namespace ToDoList.Model.Base.Interfaces.Repository
         T FindById(int id);
 
         void Update(T entity);
+
+        T FindBy(Func<T, bool> predicate);
     }
 }

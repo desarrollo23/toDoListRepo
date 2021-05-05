@@ -44,5 +44,10 @@ namespace ToDoList.Infraestructure.Repository
         {
             _unitOfWork.Context.Entry(entity).State = Microsoft.EntityFrameworkCore.EntityState.Modified;
         }
+
+        public virtual T FindBy(Func<T, bool> predicate)
+        {
+            return _unitOfWork.Context.Set<T>().FirstOrDefault(predicate);
+        }
     }
 }

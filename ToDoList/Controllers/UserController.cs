@@ -20,12 +20,11 @@ namespace ToDoList.Service.Controllers
     public class UserController : ControllerBase
     {
         private IUserService _userService;
-        private readonly IMapper _mapper;
+       
 
-        public UserController(IUserService userService, IMapper mapper)
+        public UserController(IUserService userService)
         {
             _userService = userService;
-            _mapper = mapper;
         }
 
         //[HttpGet("getAllUsers")]
@@ -38,13 +37,14 @@ namespace ToDoList.Service.Controllers
         //    return Ok(usersDTO);
         //}
 
-        //[HttpPost("create")]
-        //public IActionResult CreateUser(CreateUserDTO userDTO)
-        //{
-        //    var user = _mapper.Map<User>(userDTO);
-        //    _userService.CreateUser(user);
+        [AllowAnonymous]
+        [HttpPost("create")]
+        public IActionResult CreateUser(CreateUserDTO userDTO)
+        {
+            
+            var response = _userService.CreateUser(userDTO);
 
-        //    return Ok();
-        //}
+            return Ok(response);
+        }
     }
 }

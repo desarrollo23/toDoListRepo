@@ -22,9 +22,8 @@ namespace ToDoList.Infraestructure.Repos
         public List<ShoppingCar> GetShoppingCarsByIdUser(int idUser)
         {
             return _unitOfWork.Context.ShoppingCar
-                .Where(x => x.UserId == idUser)
-                // .Include(x => x.User)
                 .Include(x => x.Items)
+                .Where(x => x.UserId == idUser)
                 .ToList();
         }
 
