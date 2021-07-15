@@ -53,14 +53,14 @@ namespace ToDoList.Infraestructure.Services
                     response.Errors = new List<Error>
                     {
                         new Error(System.Net.HttpStatusCode.NotModified,
-                        "ItemCarService => ChangeStateItem")
+                        GetType().Name)
                     };
                 }
             }
             catch (Exception)
             {
                 response.Errors.Add(new Error(System.Net.HttpStatusCode.InternalServerError,
-                        "ItemCarService => ChangeStateItem"));
+                        GetType().Name));
             }
 
             return response;

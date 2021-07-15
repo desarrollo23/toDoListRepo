@@ -7,8 +7,7 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Security.Cryptography.X509Certificates;
 using System.Text;
-using System.Text.Encodings;
-using ToDoList.Model.MyModels;
+using ToDoList.Model.DTOS;
 using ToDoList.Model.Security;
 
 namespace ToDoList.Infraestructure.Utils.Security
@@ -21,12 +20,11 @@ namespace ToDoList.Infraestructure.Utils.Security
             _configuration = configuration;
         }
 
-        public string GenerateJSONWebToken(User userInfo)
+        public void GenerateJSONWebToken(ResponseAuthenticateDTO userInfo)
         {
             var claims = new[]
             {
-                new Claim(JwtRegisteredClaimNames.UniqueName, userInfo.Identification),
-                new Claim("FullName", $"{userInfo.FirstName} {userInfo.LastName}")
+                new Claim(JwtRegisteredClaimNames.UniqueName, userInfo.Identification)
             };
 
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["Jwt:Key"]));
@@ -42,7 +40,7 @@ namespace ToDoList.Infraestructure.Utils.Security
                 signingCredentials: creds
                 );
 
-            return new JwtSecurityTokenHandler().WriteToken(token);
+            userInfo.Token =  new JwtSecurityTokenHandler().WriteToken(token);
         }
     }
 }

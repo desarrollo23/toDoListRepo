@@ -32,19 +32,33 @@ namespace ToDoList.Infraestructure.Services
             _mapper = mapper;
         }
 
-        public string GenerateToken(User userInfo)
+        public void GenerateToken(ResponseAuthenticateDTO userInfo)
         {
-            return _jwtAuthentication.GenerateJSONWebToken(userInfo);
+             _jwtAuthentication.GenerateJSONWebToken(userInfo);
         }
 
-        public User ValidateUser(ValidateUserDTO userDTO)
+        public ResponseAuthenticateDTO ValidateUser(ValidateUserDTO userDTO)
         {
+            ResponseAuthenticateDTO responseAuthenticate = null ;
+
             var userReq = _mapper.Map<User>(userDTO);
             userReq.Password = Encrypt.EncryptPassword(userDTO.Password);
 
             var user = _securityRepository.AuthenticateUser(userReq);
 
-            return user ?? null;
+            if (user != null)
+            {
+                responseAuthenticate = new ResponseAuthenticateDTO
+                {
+                    Id = user.Id,
+                    Identification = user.Identification,
+                    Message = "Authentication successful",
+                    StatusCode = System.Net.HttpStatusCode.OK,
+                };
+                GenerateToken(responseAuthenticate);
+            }
+
+            return responseAuthenticate;
         }
     }
 }

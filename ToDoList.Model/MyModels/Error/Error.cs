@@ -9,7 +9,7 @@ namespace ToDoList.Model.MyModels.Error
 {
     public class Error: BaseError
     {
-        public Error(HttpStatusCode StatusCode, string objectName, string message = null)
+        public Error(HttpStatusCode StatusCode, string objectName, string message = "Ha ocurrido un error")
             : base(StatusCode, objectName, message)
         {
 

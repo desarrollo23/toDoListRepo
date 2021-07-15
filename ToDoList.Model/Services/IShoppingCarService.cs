@@ -19,6 +19,8 @@ namespace ToDoList.Model.Services
         EntityResponse UpdateShoppingCar(ShoppingCarDTO shoppingCarDTO, int id);
 
         EntityResponse DeleteShoppingCar(int id);
-        
+
+        EntityResponse GetShoppingCartById(int id);
+
     }
 }

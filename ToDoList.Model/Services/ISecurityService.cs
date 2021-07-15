@@ -8,7 +8,7 @@ namespace ToDoList.Model.Services
 {
     public interface ISecurityService
     {
-        User ValidateUser(ValidateUserDTO userDTO);
-        string GenerateToken(User userInfo);
+        ResponseAuthenticateDTO ValidateUser(ValidateUserDTO userDTO);
+        void GenerateToken(ResponseAuthenticateDTO userInfo);
     }
 }

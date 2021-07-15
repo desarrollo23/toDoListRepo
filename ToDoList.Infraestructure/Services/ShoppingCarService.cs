@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using ToDoList.Model.Base.Interfaces.Repository;
 using ToDoList.Model.DTOS;
 using ToDoList.Model.DTOS.Response;
@@ -92,6 +93,47 @@ namespace ToDoList.Infraestructure.Services
             {
                 response.Entity = shoppingCars;
                 response.StatusCode = System.Net.HttpStatusCode.OK;
+            }
+
+            return response;
+        }
+
+        public EntityResponse GetShoppingCartById(int id)
+        {
+            EntityResponse response;
+
+            try
+            {
+                var cart = _shoppingCarRepository.FindById(id);
+
+                if(cart != null)
+                {
+                    response = new EntityResponse
+                    {
+                        Entity = cart,
+                        StatusCode = System.Net.HttpStatusCode.OK
+                    };
+                }
+                else
+                {
+                    response = new EntityResponse
+                    {
+                        Errors = new List<Error>
+                        {
+                            new Error(System.Net.HttpStatusCode.NotFound, "GetShoppingCartById")
+                        }
+                    };
+                }
+            }
+            catch (Exception)
+            {
+                response = new EntityResponse
+                {
+                    Errors = new List<Error>
+                        {
+                            new Error(System.Net.HttpStatusCode.InternalServerError, "GetShoppingCartById")
+                        }
+                };
             }
 
             return response;

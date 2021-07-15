@@ -1,12 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using ToDoList.Model.DTOS;
 using ToDoList.Model.MyModels;
 
 namespace ToDoList.Model.Security
 {
     public interface IJwtAuthentication
     {
-        string GenerateJSONWebToken(User userInfo);
+        void GenerateJSONWebToken(ResponseAuthenticateDTO userInfo);
     }
 }

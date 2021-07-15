@@ -23,27 +23,13 @@ namespace ToDoList.Service.Controllers
         [HttpPost("authenticate")]
         public IActionResult Authentication([FromBody] ValidateUserDTO validateUserDTO)
         {
+            
             var user = _securityService.ValidateUser(validateUserDTO);
 
             if (user != null)
-            {
-                var token = _securityService.GenerateToken(user);
+                return Ok(user);
 
-                var responseAuthenticateDTO = new ResponseAuthenticateDTO
-                {
-                    Id = user.Id,
-                    Identification = validateUserDTO.Identification,
-                    Message = "Authentication successful",
-                    StatusCode = System.Net.HttpStatusCode.OK,
-                    Token = token
-                };
-
-
-                return Ok(responseAuthenticateDTO);
-            }
-
-
-            return Unauthorized();
+            return Unauthorized("User not authenticated");
 
         }
     }
